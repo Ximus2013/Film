@@ -1,0 +1,113 @@
+﻿@model film.Infrastructure.Models.Actor
+
+@{
+    ViewBag.Title = "AddActorView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+@using (Html.BeginForm("AddActorView", "Actors", FormMethod.Post, new { enctype = "multipart/form-data", @id = "idForm2" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal" id="partialDiv">
+        <h4>Actor</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.ActorName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ActorName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ActorName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <img class="img-thumbnail" width="200" height="311" src="@Url.Content("~/Images/"+Model.ActorImg)" alt="@Model.ActorName" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                    <input type="file" name="upload" id="uploadImages" accept=".jpg, .jpeg, .png" /><br />
+                </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @cols = "450" })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.DateofBirth, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.DateofBirth, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DateofBirth, "", new { @class = "date-picker" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" id ="submit" value="Сохранить" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+@*@section Scripts{
+<script>
+        $('#submit').on('click', function () {
+            fileInput = document.getElementById('uploadImages');
+            var files = fileInput.files;
+            var file; for (var i = 0; i < files.length; i++) {
+
+                // получаем сам файл
+                file = files.item(i);
+                // или можно так
+                file = files[i];
+                document.getElementById("ActorImg").value = file.name;
+            }
+        });
+
+        $('#submit').on('click', function (e) {
+                e.preventDefault();
+                var images = document.getElementById('uploadImages').files;
+                if (images.length > 0) {
+                if (window.FormData !== undefined) {
+                    var data = new FormData();
+                    for (var x = 0; x < images.length; x++) {
+                        data.append("images" + x, images[x]);
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("Upload", "Actors")',
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        success: function (result) {
+                            $.ajax({
+                                type: 'GET',
+                                url: url,
+                                // other settings
+                                success: function (result2) {
+                                    fillForm(result2);
+                                }
+                            });
+                            alert(result);
+                        },
+                        error: function (xhr, status, p3) {
+                            alert(xhr.responseText);
+                        }
+                    });
+                } else {
+                    alert("Браузер не поддерживает загрузку файлов HTML5!");
+                }
+        }
+    });
+</script>
+}*@

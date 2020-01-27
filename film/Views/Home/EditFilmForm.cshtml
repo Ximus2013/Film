@@ -1,0 +1,96 @@
+﻿@model film.ViewModels.FilmViewModel
+
+<style>
+    .container4 {
+        position: absolute; /* Абсолютное позиционирование */
+        right: 550px; /* Положение от правого края */
+    }
+</style>
+
+
+@using (Html.BeginForm("EditFilmForm","Home", FormMethod.Post, new { @id = "idForm" }))
+{
+    @Html.AntiForgeryToken()
+    <div id="partialDiv">
+        <div style="color:green">@ViewBag.Message</div>
+        <div class="form-horizontal">
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
+
+            <img src="@Url.Content("~/Images/"+Model.Img)" />
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Name, new { @class = "form-control" })
+                    @*@Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })*@
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2"})
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @cols = "450"})
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            @Html.HiddenFor(model => model.Img)
+            <div class="form-group">
+                @Html.LabelFor(model => model.Release, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Release, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Release, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Isfavorite, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.Isfavorite)
+                        @Html.ValidationMessageFor(model => model.Isfavorite, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Producer, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Producer, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Producer, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Actors, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                     @Model.Actors
+                    <div id="actorDropdown"></div>
+                    <button type="button" value="Add" style='border: 2px solid #000000;' id="btn_Add_Actors_For_Film" class="btn btn-default">Add</button>
+                    @*<div class="container4">
+
+                    </div>*@
+                    @Html.ValidationMessageFor(model => model.Actors, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.CategoryID, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.CategoryID, ViewBag.Category as SelectList)
+                    @Html.ValidationMessageFor(model => model.CategoryID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    @Html.EnumDropDownListFor(model => model.EnumForRelese, "")
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="button" value="Save" style='border: 2px solid #000000;' id="btn_Save_Сhanges" class="btn btn-default">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

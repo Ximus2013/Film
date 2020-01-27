@@ -1,0 +1,1 @@
+﻿$('mainDiv').html($('#partialDiv'))

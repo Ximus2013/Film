@@ -1,0 +1,183 @@
+﻿@model film.Models.Film
+@{
+    ViewBag.Title = "EditFilmView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>EditFilmView</h2>
+@Html.AntiForgeryToken()
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.DropDownListFor(model => model.Name, ViewBag.Film as SelectList, new { @id = "filmSelector" })
+        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        <button type="button" style='border: 2px solid #e34761;margin-left: 200px;' id="btn_delete" value="Delete" class="btn btn-default"> Delete</button>
+    </div>
+</div>
+
+<div>
+    <input type="file" name="upload" id="uploadImages" /><br />
+    <button id="submit">Загрузить</button>
+</div>
+
+<div id="mainDiv"></div>
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts{
+    <script>
+
+            $('#submit').on('click', function (e) {
+                e.preventDefault();
+                var images = document.getElementById('uploadImages').files;
+                if (images.length > 0) {
+                if (window.FormData !== undefined) {
+                    var data = new FormData();
+                    for (var x = 0; x < images.length; x++) {
+                        data.append("images" + x, images[x]);
+                    }
+                    var selectedVal = $("#filmSelector").val();
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("Upload", "Home")' + '/' + selectedVal,
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        success: function (result) {
+                            $.ajax({
+                                type: 'GET',
+                                url: url + '/' + selectedVal,
+                                // other settings
+                                success: function (result2) {
+                                    fillForm(result2);
+                                }
+                            });
+                            alert(result);
+                        },
+                        error: function (xhr, status, p3) {
+                            alert(xhr.responseText);
+                        }
+                    });
+                } else {
+                    alert("Браузер не поддерживает загрузку файлов HTML5!");
+                }
+        }
+    });
+
+        var urlSave = '@Url.Action("EditFilmForm", "Home")';        
+        var urlActorsDropdown = '@Url.Action("AddActorsForFilm", "Home")';
+        fillForm = function (result) {
+            $('#mainDiv').html(result);
+            $("#btn_Save_Сhanges").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: urlSave,
+                    data: $("#idForm").serialize(), // serializes the form's elements.
+                    success: function (result) {
+                        fillForm(result);
+                    }
+                });
+                return false; // avoid to execute the actual submit of the form.
+            });
+            $("#btn_Add_Actors_For_Film").click(function () {
+                var selectedVal = $("#filmSelector").val();
+                $(this).hide();
+                $.ajax({
+                    type: "GET",
+                    url: urlActorsDropdown + '/' + selectedVal,
+                    success: function (result) {
+                        fillFormShowActors(result);
+                    }
+                });
+                return false; // avoid to execute the actual submit of the form.
+            });
+        }
+        fillFormShowActors = function (result) {
+            $('#actorDropdown').html(result);
+
+            $("#btn_Add_Actor_For_Film").click(function () {
+                var selectedVal = $("#filmSelector").val();
+                var selectedActorVal = $("#filmSelector2").val();
+                $.ajax({
+                    data: {
+                        ActorId: selectedActorVal,
+                        FilmId: selectedVal
+                    },
+                    type: "POST",
+                    url: urlActorsDropdown,
+                    success: function (result) {
+                        console.log(result);
+                        fillForm(result);
+                    }
+                });
+                return false; // avoid to execute the actual submit of the form.
+            });
+                //   $("#filmSelector2").change(function () {
+                //    var selectedVal = this.value;
+                //    $.ajax({
+                //        type: 'POST',
+                //        url: urlActorsDropdown + '/' + selectedVal,
+                //        // other settings
+                //        success: function (result) {
+                //            fillFormShowActors(result);
+                //        }
+                //    });
+                //    console.log(selectedVal)
+                //})
+        }
+
+    var url = '@Url.Action("EditFilmForm", "Home")';
+        $("#filmSelector").change(function () {
+            var selectedVal = this.value;
+            $.ajax({
+                type: 'GET',
+                url: url + '/' + selectedVal,
+                // other settings
+                success: function (result) {
+                    fillForm(result);
+                }
+            });
+            console.log(selectedVal)
+        })
+
+        var urlDelete = '@Url.Action("DeleteFilmView", "Home")';
+        $("#btn_delete").click(function () {
+            var selectedVal = $("#filmSelector").val();
+            $.ajax({
+                type: 'GET',
+                url: urlDelete + '/' + selectedVal,
+                success: function (result) {
+                    console.log(result);
+                    if (result.success) {
+                        window.location.href = '';
+                    }
+                    else {
+                        $('#error_div').html(result.error);
+                    }
+                },
+                error: function (e) {
+                    $('#error_div').html(e.statusText);
+                }
+            })
+        });
+
+        var urlSelectDropdown = '@Url.Action("AddActorsForFilm", "Home")';
+        $("#filmSelector2").change(function () {
+            var selectedVal = this.value;
+            $.ajax({
+                type: 'GET',
+                url: urlSelectDropdown + '/' + selectedVal,
+                // other settings
+                success: function (result) {
+                    fillForm(result);
+                }
+            });
+            console.log(selectedVal)
+        })
+    </script>
+}

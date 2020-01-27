@@ -1,0 +1,36 @@
+﻿@using film.ViewModels
+@using film.Models
+@using film.Repository
+
+
+
+@model HomeViewModels
+
+<h2>Лучшие Фильмы</h2>
+
+<div class="row mt-5 mb-2">
+    @foreach (var film in Model.favFilm)
+    {
+        @Html.Partial("AllFilms", film)
+    }
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var lesstext = "less";
+
+            $(".morelink").click(function () {
+                if ($(this).hasClass("less")) {
+                    $(this).removeClass("less");
+                    $(this).html(moretext);
+                } else {
+                    $(this).addClass("less");
+                    $(this).html(lesstext);
+                }
+                $(this).parent().prev().toggle();
+                $(this).prev().toggle();
+                return false;
+            });
+        });
+    </script>
+}

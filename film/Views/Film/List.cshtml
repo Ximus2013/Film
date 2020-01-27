@@ -1,0 +1,14 @@
+﻿@using film.ViewModels
+@using film.Models
+<h2>Все Фильмы</h2>
+<h2>@Model.filmCategory</h2>
+
+<div class="row mt-5 mb-2">
+    @{
+        foreach (Film film in Model.allFilms)
+        {
+            @Html.Partial("AllFilms", film)
+        }
+    }
+
+</div>

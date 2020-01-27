@@ -1,0 +1,145 @@
+﻿@model film.ViewModels.FilmViewModel
+
+@{
+    ViewBag.Title = "AddFilmView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>AddFilmView</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Film</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "" })
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.Img, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Img, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Img, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @cols = "450" })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Release, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Release, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Release, "", new { @class = "date-picker" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Isfavorite, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.Isfavorite)
+                    @Html.ValidationMessageFor(model => model.Isfavorite, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Producer, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Producer, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Producer, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Actors, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.HiddenFor(model => model.Actors)
+                <span id="actorsNames"></span>
+                <div id="actorDropdown"></div>
+                <button type="button" value="Add" style='border: 2px solid #000000;' id="btn_Add_Actors_For_Film" class="btn btn-default">Add</button>
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CategoryID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.CategoryID, ViewBag.Category as SelectList)
+                @Html.ValidationMessageFor(model => model.CategoryID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @Html.EnumDropDownListFor(model => model.EnumForRelese, "")
+        <input type="submit" value="Отправить" />
+        @*<div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    @Html.ActionLink("Добавить фильм", "Create", new { Id = 11, })
+                </div>
+            </div>*@
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts{
+    <script>
+
+        var urlAddFilmView =  '@Url.Action("AddActorsForFilm", "Home")';
+        $("#btn_Add_Actors_For_Film").click(function () {
+            $(this).hide();
+            $.ajax({
+                type: "GET",
+                url: urlAddFilmView,
+                success: function (result) {
+                    fillFormShowActors(result);
+                }
+            });
+            return false; // avoid to execute the actual submit of the form.
+        });
+
+
+
+        fillFormShowActors = function (result) {
+            $('#actorDropdown').html(result);
+            
+            $("#btn_Add_Actor_For_Film").click(function () {
+                var selectedActorVal = $("#filmSelector2").val();
+                document.getElementById("Actors").value = document.getElementById("Actors").value + selectedActorVal + ",";
+                document.getElementById("actorsNames").textContent = document.getElementById("actorsNames").textContent + $("#filmSelector2 option:selected").text() + ",";;
+                var x = document.getElementById("filmSelector2");
+                x.remove(x.selectedIndex);
+
+                //$.ajax({
+                //    data: {
+                //        ActorId: selectedActorVal,
+                //        FilmId: selectedVal
+                //    },
+                //    type: "POST",
+                //    url: urlActorsDropdown,
+                //    success: function (result) {
+                //        console.log(result);
+                //        fillForm(result);
+                //    }
+                //});
+                return false; // avoid to execute the actual submit of the form.
+            });
+        }
+    </script>
+}

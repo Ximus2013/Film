@@ -1,0 +1,15 @@
+﻿@using film.ViewModels
+@using film.Models
+@using film.Infrastructure.Extensions
+
+@model CategoryFilmsViewModel
+
+<h2> @Model.CategoryName</h2>
+<p> @Model.CategoryDescription</p>
+
+<div class="row mt-5 mb-2">
+    @foreach (var film in Model.CategoryFilm)
+    {
+        @Html.Partial("AllFilms", film)
+    }
+</div>

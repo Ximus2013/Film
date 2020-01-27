@@ -1,0 +1,28 @@
+﻿@using film.ViewModels
+@using film.Infrastructure.Models
+
+
+<style>
+    .containerGroup {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 20px;
+        margin-top: 20px;
+    }
+</style>
+
+    <h2>Актеры</h2>
+<div>
+    @Html.ActionLink("Add", "AddActorView")
+</div>
+<div>
+    @{
+        foreach (Actor actor in Model.AllActors)
+        {
+            <div class="containerGroup">
+                @Html.Partial("Actors", actor)
+            </div>
+                }
+                }
+            </div>

@@ -1,0 +1,54 @@
+﻿@using film.ViewModels
+@using film.Models
+@using film.Infrastructure.Extensions
+
+@model FilmListViewModel
+<style>
+    .RightBar {
+        position: absolute;
+        right: 150px; 
+</style>
+
+<div class=" RightBar">
+
+        @Html.ActionLink("Ожидаем", "ListAllFilms", "Home", new { status = "No Released", search = Model.PageInfo.Search }, new { @class = "nav-link"})
+
+        @Html.ActionLink("В прокате", "ListAllFilms", "Home", new { status = "Released", search = Model.PageInfo.Search }, new { @class = "nav-link"})
+
+        @Html.ActionLink("Прокат завершен", "ListAllFilms", "Home", new { status = "Finished", search = Model.PageInfo.Search }, new { @class = "nav-link"})
+
+        @Html.ActionLink("По дате выпуска", "ListAllFilms", "Home", new { status = "OrderByDate", search = Model.PageInfo.Search }, new { @class = "nav-link"})
+
+</div>
+
+<div class="row mt-5 mb-2">
+    @foreach (var film in Model.AllFilms)
+    {
+        @Html.Partial("AllFilms", film)
+    }
+</div>
+<div class="btn-group">
+    @Html.PageLinks(Model.PageInfo, x => Url.Action("ListAllFilms", new { page = x, search = Model.PageInfo.Search, status = Model.PageInfo.Status }))
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var moretext = "more";
+            var lesstext = "less";
+
+
+            $(".morelink").click(function () {
+                if ($(this).hasClass("less")) {
+                    $(this).removeClass("less");
+                    $(this).html(moretext);
+                } else {
+                    $(this).addClass("less");
+                    $(this).html(lesstext);
+                }
+                $(this).parent().prev().toggle();
+                $(this).prev().toggle();
+                return false;
+            });
+        });
+    </script>
+}

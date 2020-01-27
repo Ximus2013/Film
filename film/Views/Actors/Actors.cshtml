@@ -1,0 +1,83 @@
+﻿@using film.ViewModels
+@using film.Infrastructure.Models
+@using film.Infrastructure.Extensions
+
+@model Actor
+
+<style>
+    .containerGroup {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 20px;
+    }
+    .container1 {
+        position: absolute; /* Абсолютное позиционирование */
+        left: 50px; /* Положение от правого края */
+    }
+    .container2 {
+        position: absolute; /* Абсолютное позиционирование */
+        left: 250px; /* Положение от правого края */
+    }
+    .container3 {
+        position: absolute; /* Абсолютное позиционирование */
+        left: 350px; /* Положение от правого края */
+        right: 350px;
+    }
+    .container4 {
+        position: absolute; /* Абсолютное позиционирование */
+        right: 250px; /* Положение от правого края */
+    }
+    .container5 {
+        position: absolute; /* Абсолютное позиционирование */
+        right: 150px; /* Положение от правого края */
+    }
+    .CollorAndSize {
+        color: greenyellow; /* Цвет символа */
+        font-size: 230%; /* Размер шрифта */
+        background: #666eff;
+        border-radius: 100px; /* Радиус скругления */
+        border: 3px solid green; /* Параметры рамки */
+        box-shadow: 0 0 7px #666eff; /* Параметры тени */
+    }
+</style>
+
+<div>
+    <div class="containerGroup">
+        @Html.HiddenFor(model => model.Id, new { @id = "ActorSelector" })
+        <div class="container1">
+            @Model.ActorName
+        </div>
+        <div class="container2">
+            @if (Model.ActorImg != null)
+            {
+            <img class="img-thumbnail" width="60" height="93" src="@Url.Content("~/Images/"+Model.ActorImg)" />
+            }
+            else
+            {
+                var Initials = Model.ActorName.ToString();
+                int i = 0;
+                char[] chars = new char[Initials.Length];
+                foreach (char c in Initials) { 
+                if (!char.IsLower(c)) {
+                    chars[i++] = c;
+                }
+                }
+                Initials = new string(chars, 0, i);
+            <div class="CollorAndSize">@Html.Label(Initials)</div>
+            }
+            
+        </div>
+        <div class="container3"
+             @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @cols = "450", @rows = 5 })
+        </div>
+        <div class="container4">
+            @Html.DisplayFor(model => model.DateofBirth, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="container5">
+            @Html.ActionLink("Edit", "AddActorView", new { id = Model.Id })
+            @Html.ActionLink("Delete", "DeleteActorView", new { id = Model.Id })
+        </div>
+    </div>
+    <div class="containerGroup"></div>
+    </div>

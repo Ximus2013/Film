@@ -1,0 +1,105 @@
+﻿@using film.ViewModels
+@using film.Models
+@using film.Infrastructure.Extensions
+
+@model OneFilmViewModel
+
+
+<style>
+    .gallery img {
+        width: 200px;
+        height: 300px;
+        object-fit: cover;
+    }
+
+    .top {
+        margin-top: 80px;
+    }
+    a {
+        color: #0254EB
+    }
+
+        a:visited {
+            color: #0254EB
+        }
+
+        a.morelink {
+            text-decoration: none;
+            outline: none;
+        }
+
+    .morecontent span {
+        display: none;
+    }
+
+    .comment {
+        width: 300px;
+        margin: 10px;
+    }
+</style>
+
+<div class="col-lg-4">
+    <div class="top">
+    </div>
+    <div class="gallery">
+        @if (Model.OneFilm.Img != null)
+        {
+            <img class="img-thumbnail" src="@Url.Content("~/Images/" + Model.OneFilm.Img)" alt="@Model.OneFilm.Name" />
+        }
+        else
+        {
+            <img class="img-thumbnail" src="@Url.Content("~/Images/1566920083_81.jpg")" alt="@Model.OneFilm.Name" />
+        }
+    </div>
+    <h2> @Model.OneFilm.Name</h2>
+    <div class="comment more">
+        @{
+            var str = Model.OneFilm.Description;
+            if (str != null && str.Length > 200)
+            {
+                str.ToString();
+                var firstList = str.Substring(0, 200);
+                var LastList = (str.Substring(200, str.Length - 200));
+                @firstList
+                <span class="moreellipses">
+                    @("...")
+                </span><span class="morecontent">
+                    <span>
+                        @LastList
+                    </span>&nbsp;&nbsp;<a href="" class="morelink">
+                        @("more")
+                    </a>
+                </span>
+            }
+            else
+            {
+                @Model.OneFilm.Description
+            }
+        }
+    </div>
+    <p> Год выпуска: @Model.OneFilm.Release</p>
+    <p> Режиссер: @Model.OneFilm.Producer</p>
+    <p> В ролях: @Model.OneFilm.Actors</p>
+    <p> Жанр: @Html.ActionLink(Model.OneFilm.CategoryName, "CategoryFilm", new { Id = Model.OneFilm.CategoryID })</p>
+    <p> Прокат: @Model.OneFilm.EnumForRelese.GetDescription()</p>
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var lesstext = "less";
+
+            $(".morelink").click(function () {
+                if ($(this).hasClass("less")) {
+                    $(this).removeClass("less");
+                    $(this).html(moretext);
+                } else {
+                    $(this).addClass("less");
+                    $(this).html(lesstext);
+                }
+                $(this).parent().prev().toggle();
+                $(this).prev().toggle();
+                return false;
+            });
+        });
+    </script>
+}

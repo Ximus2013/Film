@@ -1,0 +1,11 @@
+﻿@model film.Infrastructure.Models.Actor
+<div id="partialDiv">
+    <div class="form-group">
+        @Html.HiddenFor(model => model.ActorName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("ActorId", ViewBag.Actors as SelectList, new { @id = "filmSelector2" })
+            @Html.ValidationMessageFor(model => model.ActorName, "", new { @class = "text-danger" })
+            <button type="button" value="Add" style='border: 2px solid #000000;' id="btn_Add_Actor_For_Film" class="btn btn-default">Add</button>
+        </div>
+    </div>
+</div>

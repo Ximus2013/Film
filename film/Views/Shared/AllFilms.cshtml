@@ -1,0 +1,183 @@
+﻿@using film.ViewModels
+@using film.Models
+@using film.Infrastructure.Extensions
+@using System.Text.RegularExpressions;
+
+@model FilmViewModel
+
+<style>
+    .gallery img {
+        width: 200px;
+        height: 300px;
+        object-fit: cover;
+    }
+
+    .top {
+        margin-top: 20px;
+    }
+
+    a {
+        color: #0254EB
+    }
+
+        a:visited {
+            color: #0254EB
+        }
+
+        a.morelink {
+            text-decoration: none;
+            outline: none;
+        }
+
+    .morecontent span {
+        display: none;
+    }
+
+    .comment {
+        width: 300px;
+        margin: 10px;
+    }
+
+    .search {
+        background-color: #ffb43d;
+        margin-top: 4px;
+    }
+</style>
+
+<div class="col-lg-4">
+    <div class="top">
+    </div>
+    <div class="gallery">
+        @if (Model.Img != null)
+        {
+            <img class="img-thumbnail" src="@Url.Content("~/Images/" + Model.Img)" alt="@Model.Name" />
+        }
+        else
+        {
+            <img class="img-thumbnail" src="@Url.Content("~/Images/1566920083_81.jpg")" alt="@Model.Name" />
+        }
+    </div>
+    <div>
+        <h2>
+            @{
+                var Search = (string)ViewBag.Search;
+                var Status = (string)ViewBag.Status;
+                var nameModel = Model.Name;
+                var desc = Model.Description;
+                var result = "";
+                @*if (Search != null && Model.Name != null)
+                    {
+                        var search = string.Format("<span class=\"search\">{0}</span>", Search);
+                        var lastresult = Regex.Replace(nameModel, Search, search, RegexOptions.IgnoreCase);
+                        //var lastresult = nameModel.Replace(Search, search);
+                        @Html.Raw(lastresult);
+                    }*@
+
+                if (Search != null && Model.Name != null)
+                {
+                    for (var i = 0; i < nameModel.Length; i++)
+                    {
+                        if (nameModel[i] == Search[0])
+                        {
+                            var isEqual = true;
+                            for (int j = 0; j < Search.Length; j++)
+                            {
+                                if (nameModel[i + j] != Search[j])
+                                {
+                                    @nameModel[i];
+                                    isEqual = false;
+                                    break;
+                                }
+                            }
+                            if (isEqual)
+                            {
+                                i += Search.Length - 1;
+                                result += "<span class=\"search\">" + Search + "</span>";
+                                continue;
+                            }
+                        }
+                        result += nameModel[i];
+                    }
+                    @Html.Raw(result);
+                }
+                else
+                {
+                    @Model.Name
+                }
+            }
+        </h2>
+    </div>
+    <div class="comment more">
+        @{
+            var str = Model.Description;
+            int nuberI = 200;
+            if (str != null && str.Length > 200)
+            {
+
+                for (var i = 0; i < str.Length - 200; i++)
+                {
+                    if (i + 200 < str.Length && str[i + 200] == ' ')
+                    {
+                        nuberI = i + 200;
+                        break;
+                    }
+
+                    if (200 - i >= 0 && str[200 - i] == ' ')
+                    {
+                        nuberI = 200 - i;
+                        break;
+                    }
+                }
+            }
+
+            if (str != null && str.Length > 200)
+            {
+                str.ToString();
+                var firstList = str.Substring(0, nuberI);
+                var LastList = (str.Substring(nuberI, str.Length - nuberI));
+                @firstList
+                <span class="moreellipses">
+                    @("...")
+                </span><span class="morecontent">
+                    <span>
+                        @LastList
+                    </span>&nbsp;&nbsp;<a href="" class="morelink">
+                        @("more")
+                    </a>
+                </span>
+            }
+            else
+            {
+                @Model.Description
+            }
+        }
+
+
+    </div>
+    <p> Год выпуска: @Model.Release.ToShortDateString()</p>
+    <p> Режиссер: @Model.Producer</p>
+    <p> В ролях: @Model.Actors</p>
+    <p> Жанр: @Html.ActionLink(Model.CategoryName, "CategoryFilm", new { Id = Model.CategoryID })</p>
+    <p> Прокат: @Model.EnumForRelese.GetDescription()</p>
+    @Html.ActionLink("Подробнее", "OneFilm", new { Id = Model.Id })
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var lesstext = "less";
+
+            $(".morelink").click(function () {
+                if ($(this).hasClass("less")) {
+                    $(this).removeClass("less");
+                    $(this).html(moretext);
+                } else {
+                    $(this).addClass("less");
+                    $(this).html(lesstext);
+                }
+                $(this).parent().prev().toggle();
+                $(this).prev().toggle();
+                return false;
+            });
+        });
+    </script>
+}
